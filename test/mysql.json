@@ -1,0 +1,9 @@
+{
+  "dsn": "caddy_user:caddy_password@tcp(127.0.0.1:3306)/caddy?charset=utf8mb4",
+  "maxLifetime": 180,
+  "maxOpenConns": 10,
+  "maxIdleConns": 1,
+  "ConnMaxIdleTime": 60,
+  "tableNamePrefix": "CADDY",
+  "refreshInterval": 3
+}
