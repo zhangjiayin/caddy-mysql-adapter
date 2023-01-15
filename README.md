@@ -49,7 +49,7 @@ caddy run --adapter mysql --config ./mysql.json
   "refreshInterval": 3 //in seconds ,  auto check version in  CADDY_CONFIG table,reload caddy server if the version updated.
 }
 ```
-- table schema 
+- table schema (it shoud be created atomically)
 ```SQL
 CREATE TABLE `CADDY_CONFIG` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -63,7 +63,7 @@ CREATE TABLE `CADDY_CONFIG` (
 ```
 - table data should be 
 ```
-INSERT INTO `` (`id`,`key`,`value`,`created`,`updated`) VALUES (1,'config','{\"apps\":{\"http\":{\"http_port\":80,\"https_port\":443,\"servers\":{\"srv0\":{\"listen\":[\":80\"],\"routes\":[{\"handle\":[{\"handler\":\"subroute\",\"routes\":[{\"handle\":[{\"body\":\"Hello, world!\",\"handler\":\"static_response\"}]}]}],\"match\":[{\"host\":[\"localhost\"]}],\"terminal\":true},{\"handle\":[{\"handler\":\"subroute\",\"routes\":[{\"handle\":[{\"body\":\"Hello, world!\",\"handler\":\"static_response\"}]}]}],\"match\":[{\"host\":[\"localhost1\"]}],\"terminal\":true}]}}}},\"logging\":{\"logs\":{\"default\":{\"level\":\"DEBUG\"}}},\"storage\":{\"connection_string\":\"postgres://caddy:caddy@localhost:5432/caddy?sslmode=disable\",\"module\":\"postgres\"}}',1673794123,1673794123);
-INSERT INTO `` (`id`,`key`,`value`,`created`,`updated`) VALUES (2,'version','5',1673794123,1673794123);
+INSERT INTO `CADDY_CONFIG` (`id`,`key`,`value`,`created`,`updated`) VALUES (1,'config','{\"apps\":{\"http\":{\"http_port\":80,\"https_port\":443,\"servers\":{\"srv0\":{\"listen\":[\":80\"],\"routes\":[{\"handle\":[{\"handler\":\"subroute\",\"routes\":[{\"handle\":[{\"body\":\"Hello, world!\",\"handler\":\"static_response\"}]}]}],\"match\":[{\"host\":[\"localhost\"]}],\"terminal\":true},{\"handle\":[{\"handler\":\"subroute\",\"routes\":[{\"handle\":[{\"body\":\"Hello, world!\",\"handler\":\"static_response\"}]}]}],\"match\":[{\"host\":[\"localhost1\"]}],\"terminal\":true}]}}}},\"logging\":{\"logs\":{\"default\":{\"level\":\"DEBUG\"}}},\"storage\":{\"connection_string\":\"postgres://caddy:caddy@localhost:5432/caddy?sslmode=disable\",\"module\":\"postgres\"}}',1673794123,1673794123);
+INSERT INTO `CADDY_CONFIG` (`id`,`key`,`value`,`created`,`updated`) VALUES (2,'version','5',1673794123,1673794123);
 
 ```
