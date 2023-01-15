@@ -41,12 +41,12 @@ caddy run --adapter mysql --config ./mysql.json
 ```
 {
   "dsn": "caddy_user:caddy_password@tcp(127.0.0.1:3306)/caddy?charset=utf8mb4",  //ref: https://github.com/go-sql-driver/mysql#dsn-data-source-name
-  "maxLifetime": 180,  //ref: https://pkg.go.dev/database/sql#DB.SetConnMaxLifetime
+  "maxLifetime": 180,  //in seconds , ref: https://pkg.go.dev/database/sql#DB.SetConnMaxLifetime
   "maxOpenConns": 10, //ref: https://pkg.go.dev/database/sql#DB.SetMaxOpenConns
   "maxIdleConns": 1, //ref: https://pkg.go.dev/database/sql#DB.SetMaxIdleConns
-  "ConnMaxIdleTime": 60, //ref: https://pkg.go.dev/database/sql#DB.SetConnMaxIdleTime
+  "ConnMaxIdleTime": 60, //in seconds ,  ref: https://pkg.go.dev/database/sql#DB.SetConnMaxIdleTime
   "tableNamePrefix": "CADDY", //table prefix in mysql ,full table name should be CADDY_CONFIG
-  "refreshInterval": 3 //auto check version in  CADDY_CONFIG table,reload caddy server if the version updated.
+  "refreshInterval": 3 //in seconds ,  auto check version in  CADDY_CONFIG table,reload caddy server if the version updated.
 }
 ```
 - table schema 
