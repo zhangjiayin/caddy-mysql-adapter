@@ -52,22 +52,43 @@ caddy run --adapter mysql --config ./mysql.json
 
 - table schema (it shoud be created atomically)
 
+![This is an image](./table.jpg)
+
+ - table DDL should like below
 ```SQL
 CREATE TABLE `CADDY_CONFIG` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `key` char(255) NOT NULL,
   `value` longtext,
+  `enable` tinyint(1) NOT NULL DEFAULT '1',
   `created` int(11) DEFAULT NULL,
   `updated` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `key_UNIQUE` (`key`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8
+  KEY `key` (`key`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8
 ```
 
 - table data should be
 
 ```
-INSERT INTO `CADDY_CONFIG` (`id`,`key`,`value`,`created`,`updated`) VALUES (1,'config','{\"apps\":{\"http\":{\"http_port\":80,\"https_port\":443,\"servers\":{\"srv0\":{\"listen\":[\":80\"],\"routes\":[{\"handle\":[{\"handler\":\"subroute\",\"routes\":[{\"handle\":[{\"body\":\"Hello, world!\",\"handler\":\"static_response\"}]}]}],\"match\":[{\"host\":[\"localhost\"]}],\"terminal\":true},{\"handle\":[{\"handler\":\"subroute\",\"routes\":[{\"handle\":[{\"body\":\"Hello, world!\",\"handler\":\"static_response\"}]}]}],\"match\":[{\"host\":[\"localhost1\"]}],\"terminal\":true}]}}}},\"logging\":{\"logs\":{\"default\":{\"level\":\"DEBUG\"}}},\"storage\":{\"connection_string\":\"postgres://caddy:caddy@localhost:5432/caddy?sslmode=disable\",\"module\":\"postgres\"}}',1673794123,1673794123);
-INSERT INTO `CADDY_CONFIG` (`id`,`key`,`value`,`created`,`updated`) VALUES (2,'version','5',1673794123,1673794123);
+INSERT INTO `CADDY_CONFIG` (`id`,`key`,`value`,`enable`,`created`,`updated`) VALUES (1,'version','15',1,1673862747,1673862747);
+INSERT INTO `CADDY_CONFIG` (`id`,`key`,`value`,`enable`,`created`,`updated`) VALUES (2,'config','{\"apps\":{\"http\":{\"http_port\":80,\"https_port\":443,\"servers\":{\"srv0\":{\"listen\":[\":80\"],\"routes\":[{\"handle\":[{\"handler\":\"subroute\",\"routes\":[{\"handle\":[{\"body\":\"Hello, world!\",\"handler\":\"static_response\"}]}]}],\"match\":[{\"host\":[\"localhost\"]}],\"terminal\":true},{\"handle\":[{\"handler\":\"subroute\",\"routes\":[{\"handle\":[{\"body\":\"Hello, world!\",\"handler\":\"static_response\"}]}]}],\"match\":[{\"host\":[\"localhost3\"]}],\"terminal\":true}]}}}},\"logging\":{\"logs\":{\"default\":{\"level\":\"DEBUG\"}}},\"storage\":{\"connection_string\":\"postgres://caddy:caddy@localhost:5432/caddy?sslmode=disable\",\"module\":\"postgres\"}}',1,1673862747,1673862747);
+INSERT INTO `CADDY_CONFIG` (`id`,`key`,`value`,`enable`,`created`,`updated`) VALUES (3,'config.admin','{\n    \"listen\": \"localhost:2019\"\n  }',1,1673862747,1673862747);
+INSERT INTO `CADDY_CONFIG` (`id`,`key`,`value`,`enable`,`created`,`updated`) VALUES (4,'config.storage',' {\n    \"connection_string\": \"postgres://caddy:caddy@localhost:5432/caddy?sslmode=disable\",\n    \"module\": \"postgres\"\n  }',1,1673862747,1673862747);
+INSERT INTO `CADDY_CONFIG` (`id`,`key`,`value`,`enable`,`created`,`updated`) VALUES (5,'config.logging','{\n    \"logs\": {\n      \"default\": {\n        \"level\": \"DEBUG\",\n        \"writer\": {\n          \"filename\": \"./logs/access.log\",\n          \"output\": \"file\",\n          \"roll_keep\": 5,\n          \"roll_keep_days\": 30,\n          \"roll_size_mb\": 954\n        }\n      }\n    }\n  }',1,1673862747,1673862747);
+INSERT INTO `CADDY_CONFIG` (`id`,`key`,`value`,`enable`,`created`,`updated`) VALUES (6,'config.apps','{\n    \"http\": {\n      \"http_port\": 80,\n      \"https_port\": 443,\n      \"servers\": {\n        \"srv0\": {\n          \"listen\": [\n            \":80\"\n          ],\n          \"routes\": [\n            {\n              \"handle\": [\n                {\n                  \"handler\": \"subroute\",\n                  \"routes\": [\n                    {\n                      \"handle\": [\n                        {\n                          \"body\": \"Hello, world!\",\n                          \"handler\": \"static_response\"\n                        }\n                      ]\n                    }\n                  ]\n                }\n              ],\n              \"match\": [\n                {\n                  \"host\": [\n                    \"localhost\"\n                  ]\n                }\n              ],\n              \"terminal\": true\n            }\n          ]\n        }\n      }\n    }\n  }',1,1673862747,1673862747);
+INSERT INTO `CADDY_CONFIG` (`id`,`key`,`value`,`enable`,`created`,`updated`) VALUES (8,'config.apps.http.servers.srv0.routes','{\n  \"handle\": [\n    {\n      \"handler\": \"subroute\",\n      \"routes\": [\n        {\n          \"group\": \"group0\",\n          \"handle\": [\n            {\n              \"handler\": \"rewrite\",\n              \"uri\": \"/jonz\"\n            }\n          ],\n          \"match\": [\n            {\n              \"path\": [\n                \"/\"\n              ]\n            }\n          ]\n        },\n        {\n          \"handle\": [\n            {\n              \"handler\": \"reverse_proxy\",\n              \"headers\": {\n                \"request\": {\n                  \"set\": {\n                    \"Host\": [\n                      \"{http.reverse_proxy.upstream.hostport}\"\n                    ]\n                  }\n                }\n              },\n              \"transport\": {\n                \"protocol\": \"http\",\n                \"tls\": {}\n              },\n              \"upstreams\": [\n                {\n                  \"dial\": \"google.com:443\"\n                }\n              ]\n            }\n          ]\n        }\n      ]\n    }\n  ],\n  \"match\": [\n    {\n      \"host\": [\n        \"google.proxy.vip\"\n      ]\n    }\n  ],\n  \"terminal\": true\n}',1,1673862747,1673862747);
+
 
 ```
+
+- mysql rows data means
+  * `key` == "version" when you have a row with `key` if the `value` changed or added , the caddyserver should reload configuration in refreshInterval
+  * `key` == "config" you can store the caddy json config in value completely.
+  * `key` == "admin"  admin json value in https://caddyserver.com/docs/json/
+  * `key` == "storage"  storage json value in https://caddyserver.com/docs/json/
+  * `key` == "logging"  logging json value in https://caddyserver.com/docs/json/
+  * `key` == "apps"  apps json value in https://caddyserver.com/docs/json/
+  * `key` == "config.apps.http.servers.srv0.routes"  if you have srv0 in  config.apps.http.servers then you can add multiple config.apps.http.servers.srv0.routes rows , one row may be  means a http host which to be access from browser, do not forget update the `version` after add or changed row value.
+
+  
