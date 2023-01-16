@@ -7,7 +7,7 @@ This is a [config adapter](https://caddyserver.com/docs/config-adapters) for Cad
 Currently supported key in mysql table:
 
 - verison
-- config (now all the configuration is in config key, should be seperate to others in future,welcome to create Pull Request https://caddyserver.com/docs/json/)
+- config (now all the configuration is in config key, should be seperate to others in future,welcome to create Pull Request https://caddyserver.com/docs/json/ https://caddyserver.com/docs/caddyfile/options)
 
 Thank you, and we hope you have fun with it!
 
