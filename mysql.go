@@ -77,6 +77,7 @@ func getValueFromDb(key string) (string, error) {
 	if rows.Next() {
 		rows.Scan(&value)
 	}
+	rows.Close()
 	return value, err
 }
 
@@ -92,6 +93,7 @@ func getValuesFromDb(key string) ([]string, error) {
 		//加入数组
 		values = append(values, value)
 	}
+	rows.Close()
 	return values, err
 }
 
