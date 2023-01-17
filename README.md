@@ -54,7 +54,8 @@ caddy run --adapter mysql --config ./mysql.json
 
 ![This is an image](./table.jpg)
 
- - table DDL should like below
+- table DDL should like below
+
 ```SQL
 CREATE TABLE `CADDY_CONFIG` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -83,12 +84,10 @@ INSERT INTO `CADDY_CONFIG` (`id`,`key`,`value`,`enable`,`created`,`updated`) VAL
 ```
 
 - mysql rows data means
-  * `key` == "version" when you have a row with `key` if the `value` changed or added , the caddyserver should reload configuration in refreshInterval
-  * `key` == "config" you can store the caddy json config in value completely.
-  * `key` == "admin"  admin json value in https://caddyserver.com/docs/json/
-  * `key` == "storage"  storage json value in https://caddyserver.com/docs/json/
-  * `key` == "logging"  logging json value in https://caddyserver.com/docs/json/
-  * `key` == "apps"  apps json value in https://caddyserver.com/docs/json/
-  * `key` == "config.apps.http.servers.srv0.routes"  if you have srv0 in  config.apps.http.servers then you can add multiple config.apps.http.servers.srv0.routes rows , one row may be  means a http host which to be access from browser, do not forget update the `version` after add or changed row value.
-
-  
+  - `key` == "version" when you have a row with `key` if the `value` changed or added , the caddyserver should reload configuration in refreshInterval
+  - `key` == "config" you can store the caddy json config in value completely.
+  - `key` == "admin" admin json value in https://caddyserver.com/docs/json/
+  - `key` == "storage" storage json value in https://caddyserver.com/docs/json/
+  - `key` == "logging" logging json value in https://caddyserver.com/docs/json/
+  - `key` == "apps" apps json value in https://caddyserver.com/docs/json/
+  - `key` == "config.apps.http.servers.srv0.routes" if you have srv0 in config.apps.http.servers then you can add multiple config.apps.http.servers.srv0.routes rows , one row may be means a http host which to be access from browser, do not forget update the `version` after add or changed row value.

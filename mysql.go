@@ -29,7 +29,7 @@ type MysqlAdapterConfig struct {
 
 var db *sql.DB
 
-var createTableSql = "CREATE TABLE `%s` ( `id` bigint(20) NOT NULL AUTO_INCREMENT, `key` char(255) NOT NULL, `value` longtext, `enable` tinyint(1) NOT NULL DEFAULT '1', `created` int(11) DEFAULT NULL, `updated` int(11) DEFAULT NULL, PRIMARY KEY (`id`),  KEY `key` (`key`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8"
+var createTableSql = "CREATE TABLE `%s` ( `id` bigint(20) NOT NULL AUTO_INCREMENT, `key` char(255) NOT NULL, `value` longtext, `enable` tinyint(1) NOT NULL DEFAULT '1',   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, PRIMARY KEY (`id`),  KEY `key` (`key`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8"
 var tableName = ""
 
 var config_version = "0"
