@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"net/http"
+	"strings"
 	"time"
 
 	"github.com/caddyserver/caddy/v2"
@@ -15,6 +17,15 @@ import (
 
 func init() {
 	caddyconfig.RegisterAdapter("mysql", Adapter{})
+	caddy.RegisterModule(Adapter{})
+}
+
+// CaddyModule returns the Caddy module information.
+func (Adapter) CaddyModule() caddy.ModuleInfo {
+	return caddy.ModuleInfo{
+		ID:  "admin.api.mysql",
+		New: func() caddy.Module { return new(Adapter) },
+	}
 }
 
 type MysqlAdapterConfig struct {
@@ -314,4 +325,80 @@ func runCheckLoop(mysqlAdapterConfig MysqlAdapterConfig) {
 	}(time.Second * time.Duration(mysqlAdapterConfig.RefreshInterval))
 }
 
+// Routes returns the admin routes for the PKI app.
+func (a *Adapter) Routes() []caddy.AdminRoute {
+	return []caddy.AdminRoute{
+		{
+			Pattern: adminEndpointBase,
+			Handler: caddy.AdminHandlerFunc(a.handleAPIEndpoints),
+		},
+	}
+}
+
+// handleAPIEndpoints routes API requests within adminPKIEndpointBase.
+func (a *Adapter) handleAPIEndpoints(w http.ResponseWriter, r *http.Request) error {
+	uri := strings.TrimPrefix(r.URL.Path, adminEndpointBase)
+	if uri == "" || uri == "/" || uri == "index.html" {
+		w.Header().Set("Content-Type", "text/html")
+		_, err := w.Write([]byte(adminHtml))
+		return err
+	}
+	/**
+	uri := strings.TrimPrefix(r.URL.Path, "/pki/")
+	parts := strings.Split(uri, "/")
+	switch {
+	case len(parts) == 2 && parts[0] == "ca" && parts[1] != "":
+		return a.handleCAInfo(w, r)
+	case len(parts) == 3 && parts[0] == "ca" && parts[1] != "" && parts[2] == "certificates":
+		return a.handleCACerts(w, r)
+	}
+	return caddy.APIError{
+		HTTPStatus: http.StatusNotFound,
+		Err:        fmt.Errorf("resource not found: %v", r.URL.Path),
+	}
+	*/
+	w.Header().Set("Content-Type", "application/text")
+	_, err := w.Write([]byte("dddd"))
+	return err
+}
+
+// handleCACerts returns the certificate chain for a particular
+// CA by its ID. If the CA ID is the default, then the CA will be
+// provisioned if it has not already been. Other CA IDs will return an
+// error if they have not been previously provisioned.
+/**
+func (a *adminAPI) handleCACerts(w http.ResponseWriter, r *http.Request) error {
+	if r.Method != http.MethodGet {
+		return caddy.APIError{
+			HTTPStatus: http.StatusMethodNotAllowed,
+			Err:        fmt.Errorf("method not allowed: %v", r.Method),
+		}
+	}
+
+	ca, err := a.getCAFromAPIRequestPath(r)
+	if err != nil {
+		return err
+	}
+
+	rootCert, interCert, err := rootAndIntermediatePEM(ca)
+	if err != nil {
+		return caddy.APIError{
+			HTTPStatus: http.StatusInternalServerError,
+			Err:        fmt.Errorf("failed to get root and intermediate cert for CA %s: %v", ca.ID, err),
+		}
+	}
+
+	w.Header().Set("Content-Type", "application/pem-certificate-chain")
+	_, err = w.Write(interCert)
+	if err == nil {
+		_, _ = w.Write(rootCert)
+	}
+
+	return nil
+}
+*/
+
+const adminEndpointBase = "/caddy-mysql-adapter-admin-gui"
+
+var _ caddy.AdminRouter = (*Adapter)(nil)
 var _ caddyconfig.Adapter = (*Adapter)(nil)
