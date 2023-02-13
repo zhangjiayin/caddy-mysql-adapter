@@ -109,6 +109,7 @@ export default class MyComponent extends React.Component {
     );
   }
   componentDidMount() {
+    this.fetchMetrics();
     this.fetchMetricsLoop.bind(this)();
   }
 

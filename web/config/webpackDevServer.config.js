@@ -101,6 +101,7 @@ module.exports = function (proxy, allowedHost) {
     },
     // `proxy` is run between `before` and `after` `webpack-dev-server` hooks
     proxy,
+    /**
     onBeforeSetupMiddleware(devServer) {
       // Keep `evalSourceMapMiddleware`
       // middlewares before `redirectServedPath` otherwise will not have any effect
@@ -122,6 +123,24 @@ module.exports = function (proxy, allowedHost) {
       // it used the same host and port.
       // https://github.com/facebook/create-react-app/issues/2272#issuecomment-302832432
       devServer.app.use(noopServiceWorkerMiddleware(paths.publicUrlOrPath));
+    },
+    */
+    setupMiddlewares: (middlewares, devServer) => {
+      if (!devServer) {
+        throw new Error("webpack-dev-server is not defined");
+      }
+
+      if (fs.existsSync(paths.proxySetup)) {
+        require(paths.proxySetup)(devServer.app);
+      }
+
+      middlewares.push(
+        evalSourceMapMiddleware(devServer),
+        redirectServedPath(paths.publicUrlOrPath),
+        noopServiceWorkerMiddleware(paths.publicUrlOrPath)
+      );
+
+      return middlewares;
     },
   };
 };

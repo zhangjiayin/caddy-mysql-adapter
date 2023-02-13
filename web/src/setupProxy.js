@@ -1,31 +1,23 @@
 const { createProxyMiddleware } = require("http-proxy-middleware");
 
 module.exports = function (app) {
-  /**
   app.use(
-    createProxyMiddleware("/metrics", {
-      target: "http://localhost:2019",
+    "/metrics",
+    createProxyMiddleware({
+      target: "http://127.0.0.1:2019",
       changeOrigin: true,
-      headers: {
-        host: "localhost:2019",
-        origin: null,
-      },
+      logLevel: "debug",
       secure: false,
-      onProxyReq: function (proxyReq, req, res) {
-        proxyReq.setHeader("accept-encoding", "identity");
-        proxyReq.setHeader("connection", "keep-alive");
-        proxyReq.setHeader("referer", "");
-        console.log(proxyReq);
+      onError: function () {
+        console.log(arguments);
       },
-      onProxyRes: function (onProxyRes, req, res) {
-        // console.log(res);
+      headers: { Connection: "keep-alive" },
+      bypass: function (req, res, proxyOptions) {
+        console.log("====");
       },
-
-      //   ws: true,
       pathRewrite: {
-        // "^/metrics": "/config",
+        // "^/api": "",
       },
     })
   );
-  */
 };

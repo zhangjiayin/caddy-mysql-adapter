@@ -28,7 +28,7 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export default function BasicGrid() {
-  const [value, setValue] = React.useState("tab-metrics");
+  const [value, setValue] = React.useState("tab-config");
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -75,8 +75,8 @@ export default function BasicGrid() {
                       aria-label="lab API tabs example"
                       centered={true}
                     >
-                      <Tab label="metrics" value="tab-metrics" />
                       <Tab label="config" value="tab-config" />
+                      <Tab label="metrics" value="tab-metrics" />
                     </TabList>
                   </Box>
                   <TabPanel value="tab-metrics">
