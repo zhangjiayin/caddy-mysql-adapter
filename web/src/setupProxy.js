@@ -12,12 +12,20 @@ module.exports = function (app) {
         console.log(arguments);
       },
       headers: { Connection: "keep-alive" },
-      bypass: function (req, res, proxyOptions) {
-        console.log("====");
+    })
+  );
+
+  app.use(
+    "/config",
+    createProxyMiddleware({
+      target: "http://127.0.0.1:2019",
+      changeOrigin: true,
+      logLevel: "debug",
+      secure: false,
+      onError: function () {
+        console.log(arguments);
       },
-      pathRewrite: {
-        // "^/api": "",
-      },
+      headers: { Connection: "keep-alive" },
     })
   );
 };
